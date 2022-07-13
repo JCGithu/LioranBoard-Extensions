@@ -1,0 +1,44 @@
+[extension_name]
+Remove Bits
+[extension_info]
+Remove Bits
+[insert_external]
+<!--
+	Extension Version: 0.3
+	Author: CollquialOwl
+-->
+<div>
+<h3>Remove the bits from your strings!</h3>
+<p>This simple extension just parses out twitch Cheers out of your messages.</p>
+<p>Command parameters:</p>
+<ul><li>Input - The string you want formatted.  Variables will need /$ $/ tags!</li>
+<li>Output - The variable name that the output will be saved to. No /$ $/ needed!</li></ul>
+<p>For more fun stream tools, visit <a href="https://colloquial.studio" target="_blank">Collquial Studio</a>, or watch streams at <a href="https://twitch.tv/colloquialowl" target="_blank">ColloquialOwl</a></p>
+</div>
+<script>console.log('Remove Bits script has loaded!');</script>
+[insert_command]
+LB.extCommand("Remove Bits", 3355443, 52, 
+	{
+		input: ["Input", 14, "/$chatMessage$/"],
+		output: ["Output", 14, "NoBitOutput"]
+	});
+[insert_hook]
+case "Remove Bits":{
+	RemoveBits(LioranBoardJSON);
+}break
+[insert_script]
+function RemoveBits(json) {
+	const otherCheers = ['cheer', 'biblethump', 'cheerwhal', 'corgo', 'uni', 'showlove', 'party', 'seemsgood', 'pride', 'kappa', 'frankerz', 'heyguys', 'dansgame', 'elegiggle', 'trihard', 'kreygasm', '4head', 'swiftrage','notlikethis', 'failfish', 'vohiyo', 'pjsalt', 'mrdestructoid', 'bday', 'ripcheer', 'shamrock'];
+	const cheerRex = new RegExp(otherCheers.join('\\d+|') + `\\d+`, 'gi');
+	console.log(json);
+	let sendOut = '';
+	if (!json.input) {
+		sendOut = 'No input given!';
+	} else {
+		let target = json.input;
+		sendOut = target.replace(cheerRex, '').replace('  ', ' ');
+	}
+	console.log(sendOut);
+	LB.setVariable(json.output, sendOut, json.FromButton);
+}
+[insert_over]

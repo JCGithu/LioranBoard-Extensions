@@ -1,0 +1,66 @@
+[extension_name]
+Randomiser
+[extension_info]
+Randomiser
+[insert_external]
+<!--
+	Extension Version: 0.1
+	Author: CollquialOwl
+-->
+<div>
+<h3>Trigger a random button!</h3>
+<p>Give this extension a board ID and it'll trigger a random button from it! There's also another command to find that ID</p>
+<p>Command parameters:</p>
+<ul>
+  <li>boardID - The board you want to trigger a button on.</li>
+</ul>
+<p>For more fun stream tools, visit <a href="https://colloquial.studio" target="_blank">Collquial Studio</a>, or watch streams at <a href="https://twitch.tv/colloquialowl" target="_blank">ColloquialOwl</a></p>
+</div>
+<script>console.log('Randomiser script has loaded!');</script>
+[insert_command]
+LB.extCommand("Randomise!", 3355443, 52, 
+	{
+		"boardID": ["Board ID", 14, "[add board ID]"]
+	});
+LB.extCommand("Find Board", 3355443, 52, 
+  {
+    input: ["Board Name", 14, "[Insert Board Name]"],
+    output: ["Output", 14, "output"]
+  });
+[insert_hook]
+case "Randomise!":{
+	Randomise(LioranBoardJSON);
+}break
+case "Find Board":{
+	FindBoard(LioranBoardJSON);
+}break
+[insert_script]
+async function Randomise(json) {
+  console.log(json);
+	if (!json.boardID) return;
+  let data = await LB.getDeck(json.boardID);
+  let IDList = data.Deck.button_list;
+  let button = IDList[Math.floor(Math.random() * IDList.length)];
+  console.log(IDList);
+  console.log(button);
+  LB.triggerButton(button.button_id);
+}
+async function FindBoard(json) {
+  console.log(json);
+	if (!json.input) {
+		sendOut = 'No input given!';
+	} else {
+		let board = json.input;
+    let data = await LB.getDeckList();
+    console.log(data);
+    let index = data.DeckList.indexOf(json.input);
+    if (index == -1) {
+      sendOut = 'Board not Found';
+    } else {
+		  sendOut = data.DeckList[index + 1];
+    }
+	}
+	console.log(sendOut);
+	LB.setVariable(json.output, sendOut, json.FromButton);
+}
+[insert_over]
